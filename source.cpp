@@ -78,6 +78,26 @@ int main() {
         else if (cmd == "GLOBAL ON" || cmd == "GLOBAL") {
             globalMode = true;
             cout << "GLOBAL MODE ON" << endl;
+            //TODO:Check here added but not compile and debug
+            cout << "Code buffer: {\n" << codeBuffer << "\n}" << endl;
+            cout << "Commit Current Change to Global? (Y/N)";
+            for(int i=0;i<3;i++){
+                char c;
+                cin>>c;
+                if(c=='Y'){
+                    ofstream file2;
+                    file2.open("Payload.cpp",ios::app);
+                    file2<<codeBuffer<<endl;
+                    file2.close();
+                    codeBuffer="";
+                }else if(c=='N'){
+                    cout<< "Code buffer has been cleared" <<endl;
+                    codeBuffer="";
+                }else{
+                    cout << "Please input (Y/N) (After "<<3-i<<" time, program will auto dispose code buffer"<< endl;
+                }
+            }
+            if(codeBuffer.size())codeBuffer="";
         }
         else if (cmd == "::EXEC") {
             // Execute code in buffer
@@ -183,6 +203,15 @@ int main() {
             cout << ">>>";
             continue;
         }
+        else if(globalMode){
+            //TODO:Check here, added but not compile and debug
+            //Global mode will directly write into file
+            //So that it won't be wrap by function head
+            ofstream file2;
+            file2.open("Payload2.cpp",ios::app);
+            file2<<cmd<<endl;
+            file2.close();
+        }
         else {
             // Add to code buffer
             codeBuffer += cmd + "\n";
@@ -227,4 +256,5 @@ string getCompilerPath(const string& configFilePath) {
 
     config.close();
     return path;
+
 }
