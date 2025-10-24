@@ -9,3 +9,7 @@ Instead, they are packed into zipped file and upload necessary parts
 - Click C++ REPL.exe (Sometime config.txt need to be modified)
 ## Develop or Source Code Needed
 - source.cpp will the the thing you need
+## Special Notice
+- Do not use it in Not-English path, which ld links failed
+- We are now modifying temp folder so that User with non-ascii names can use properly
+  
