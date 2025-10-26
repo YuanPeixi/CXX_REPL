@@ -1,13 +1,13 @@
 
 // C++ includes used for precompiling -*- C++ -*-
 
-// Copyright (C) 2003-2014 Free Software Foundation, Inc.
-// This file is part of the GNU ISO C++ Library.  
-
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 3, or (at
-// your option) any later version.
+// Copyright (C) 2003-2013 Free Software Foundation, Inc.
+//
+// This file is part of the GNU ISO C++ Library.  This library is free
+// software; you can redistribute it and/or modify it under the
+// terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 3, or (at your option)
+// any later version.
 
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +27,9 @@
  *  This is an implementation file for a precompiled header.
  */
 
-// C
+ // 17.4.1.2 Headers
+
+ // C
 #ifndef _GLIBCXX_NO_ASSERT
 #include <cassert>
 #endif
@@ -115,19 +117,65 @@
 #include <unordered_set>
 #endif
 
-// VSç¼–è¯‘å™¨ä¸æ”¯æŒä»¥ä¸‹GNUç‰¹æ€§ï¼Œå·²æ³¨é‡Šæ‰
+// GNUÌØÓĞÀ©Õ¹Í·ÎÄ¼ş - ÒÑ°´ÒªÇó×¢ÊÍµô
 /*
-// GNUæ‰©å±•ï¼ŒVSä¸æ”¯æŒ
-#include <ext/algorithm>
-#include <ext/numeric>
-#include <ext/functional>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-#include <ext/pb_ds/trie_policy.hpp>
-#include <ext/pb_ds/tag_and_trait.hpp>
-#include <ext/pb_ds/hash_policy.hpp>
-#include <ext/pb_ds/list_update_policy.hpp>
-#include <ext/pb_ds/exception.hpp>
-#include <ext/rope>
-#include <ext/slist>
+#if __cplusplus >= 201402L
+#include <shared_mutex>
+#endif
+
+#if __cplusplus >= 201703L
+#include <any>
+#include <charconv>
+#include <execution>
+#include <filesystem>
+#include <memory_resource>
+#include <optional>
+#include <string_view>
+#include <variant>
+#endif
+
+#if __cplusplus >= 202002L
+#include <barrier>
+#include <bit>
+#include <compare>
+#include <concepts>
+#include <coroutine>
+#include <format>
+#include <latch>
+#include <numbers>
+#include <ranges>
+#include <semaphore>
+#include <source_location>
+#include <span>
+#include <stop_token>
+#include <syncstream>
+#include <version>
+#endif
+
+// ÊµÑéĞÔÀ©Õ¹
+#ifdef _GLIBCXX_EXPERIMENTAL
+#include <experimental/algorithm>
+#include <experimental/deque>
+#include <experimental/filesystem>
+#include <experimental/forward_list>
+#include <experimental/functional>
+#include <experimental/iterator>
+#include <experimental/list>
+#include <experimental/map>
+#include <experimental/memory>
+#include <experimental/memory_resource>
+#include <experimental/numeric>
+#include <experimental/optional>
+#include <experimental/propagate_const>
+#include <experimental/random>
+#include <experimental/regex>
+#include <experimental/set>
+#include <experimental/string>
+#include <experimental/type_traits>
+#include <experimental/unordered_map>
+#include <experimental/unordered_set>
+#include <experimental/utility>
+#include <experimental/vector>
+#endif
 */
+#pragma once
