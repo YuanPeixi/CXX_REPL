@@ -71,39 +71,13 @@ int main() {
         else if (cmd == "::EXIT") {
             break;
         }
-        else if (cmd == "::GLOBAL OFF") {
+        else if (cmd == "GLOBAL OFF") {
             globalMode = false;
             cout << "GLOBAL MODE OFF" << endl;
         }
-        else if (cmd == "::GLOBAL ON" || cmd == "::GLOBAL") {
+        else if (cmd == "GLOBAL ON" || cmd == "GLOBAL") {
             globalMode = true;
             cout << "GLOBAL MODE ON" << endl;
-            //TODO:Check here added but not compile and debug
-            if (codeBuffer != "") {
-                cout << "Code buffer: {\n" << codeBuffer << "\n}" << endl;
-                cout << "Commit Current Change to Global? (Y/N)";
-                for (int i = 0; i < 3; i++) {
-                    char c;
-                    cin >> c;
-                    if (c == 'Y' || c == 'y') {
-                        ofstream file2;
-                        file2.open("Payload.cpp", ios::app);
-                        file2 << codeBuffer << endl;
-                        file2.close();
-                        codeBuffer = "";
-                        cout << ">>>";
-                    }
-                    else if (c == 'N' || c == 'n') {
-                        cout << "Code buffer has been cleared" << endl;
-                        codeBuffer = "";
-                        cout << ">>>";
-                    }
-                    else {
-                        cout << "Please input (Y/N) (After " << 3 - i << " time, program will auto dispose code buffer" << endl;
-                    }
-                }
-                if (codeBuffer.size())codeBuffer = "";
-            }
         }
         else if (cmd == "::EXEC") {
             // Execute code in buffer
@@ -120,13 +94,13 @@ int main() {
             }
 
             file.close();
-            string compileInfo = executeCommand("\"" + compilerPath + "clang++.exe\" -save-temps -fansi-escape-codes -fdiagnostics-color=always -shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib");
+            string compileInfo = executeCommand("\"" + compilerPath + "clang++.exe\" -fansi-escape-codes -fdiagnostics-color=always -shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib");
 
             if (!compileInfo.empty()) {
                 cout << "CompileInfo={\n" << compileInfo << "\n}" << endl;
             }
 
-            if (compileInfo.find("error generated") != string::npos || compileInfo.find("errors generated") != string::npos) {
+            if (compileInfo.find("error generated") != string::npos|| compileInfo.find("errors generated") != string::npos) {
                 ofstream resetFile("PayLoad.cpp");
                 resetFile << DEFAULT_PAYLOAD;
                 resetFile.close();
@@ -169,7 +143,7 @@ int main() {
         }
         else if (cmd == "::TEST") {
             // Run test function
-            auto compileInfo = executeCommand("\"" + compilerPath + "clang++.exe\" -save-temps -shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib");
+            auto compileInfo = executeCommand("\"" + compilerPath + "clang++.exe\" -shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib");
             if (!compileInfo.empty()) {
                 cout << "CompileInfo={\n" << compileInfo << "\n}" << endl;
             }
@@ -208,16 +182,6 @@ int main() {
         else if (cmd[0] == ':' && cmd[1] == ':') {
             cout << ">>>";
             continue;
-        }
-        else if (globalMode) {
-            //TODO:Check here, added but not compile and debug
-            //Global mode will directly write into file
-            //So that it won't be wrap by function head
-            ofstream file2;
-            file2.open("Payload.cpp", ios::app);
-            file2 << cmd << endl;
-            file2.close();
-            cmd = "";
         }
         else {
             // Add to code buffer
@@ -263,5 +227,4 @@ string getCompilerPath(const string& configFilePath) {
 
     config.close();
     return path;
-
 }

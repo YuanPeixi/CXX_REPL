@@ -22,6 +22,7 @@
  * @return 命令执行结果的字符串输出
  */
 std::string executeCommand(const std::string& command) {
+    auto chrBack = setlocale(LC_ALL, "UTF-8");
 #ifdef _WIN32
     // Windows平台实现
     SECURITY_ATTRIBUTES sa;
@@ -70,6 +71,7 @@ std::string executeCommand(const std::string& command) {
     pclose(pipe);
     return result;
 #endif
+    chrBack = setlocale(LC_ALL, chrBack);
 }
 
 
