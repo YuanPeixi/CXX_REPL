@@ -20,11 +20,4 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 
 void HelloWorld() {
     MessageBox(NULL, TEXT("Hello from DLL!"), TEXT("DLL Message"), MB_OK);
-}void f(){
-cout<<"Hello World"<<endl;
-}
-
-DLLEXP void Func1() {
-f();
-
 }

@@ -44,8 +44,8 @@ void HelloWorld() {
 })";
 
 int main() {
-    greet();
     system("chcp 65001");
+    greet();
 
     // Open and write the default payload
     ofstream payloadFile("PayLoad.cpp");
