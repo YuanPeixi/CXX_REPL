@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
             if (!noColor) {
                 compileCmd += "-fansi-escape-codes -fdiagnostics-color=always ";
             }
-            compileCmd += "-shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib";
+            compileCmd += "-save-temps=obj -shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib";
             string compileInfo = executeCommand(compileCmd);
 
             if (!compileInfo.empty()) {
