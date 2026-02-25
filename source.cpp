@@ -13,6 +13,7 @@ using namespace std;
 void greet();
 void help();
 string getCompilerPath(const string& configFilePath);
+string readFile(const string& path);
 
 // Function pointers for dynamic DLL loading
 typedef void (*fn_t)();
@@ -43,7 +44,14 @@ void HelloWorld() {
     MessageBox(NULL, TEXT("Hello from DLL!"), TEXT("DLL Message"), MB_OK);
 })";
 
-int main() {
+int main(int argc, char* argv[]) {
+    bool noColor = false;
+    for (int i = 1; i < argc; i++) {
+        if (string(argv[i]) == "--no-color") {
+            noColor = true;
+        }
+    }
+
     greet();
 
     // Open and write the default payload
@@ -57,6 +65,9 @@ int main() {
     string codeBuffer;
     size_t functionCount = 0;
     bool globalMode = false;
+    bool keepMode = false;
+    string lastGoodPayload = DEFAULT_PAYLOAD;
+    size_t lastGoodFunctionCount = 0;
 
     cout << ">>>";
     while (true) {
@@ -79,6 +90,14 @@ int main() {
             globalMode = true;
             cout << "GLOBAL MODE ON" << endl;
         }
+        else if (cmd == "::KEEP" || cmd == "::KEEP ON") {
+            keepMode = true;
+            cout << "KEEP MODE ON" << endl;
+        }
+        else if (cmd == "::KEEP OFF") {
+            keepMode = false;
+            cout << "KEEP MODE OFF" << endl;
+        }
         else if (cmd == "::EXEC") {
             // Execute code in buffer
             ofstream file("PayLoad.cpp", ios::app);
@@ -94,7 +113,12 @@ int main() {
             }
 
             file.close();
-            string compileInfo = executeCommand("\"" + compilerPath + "clang++.exe\" -fansi-escape-codes -fdiagnostics-color=always -shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib");
+            string compileCmd = "\"" + compilerPath + "clang++.exe\" ";
+            if (!noColor) {
+                compileCmd += "-fansi-escape-codes -fdiagnostics-color=always ";
+            }
+            compileCmd += "-shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib";
+            string compileInfo = executeCommand(compileCmd);
 
             if (!compileInfo.empty()) {
                 cout << "CompileInfo={\n" << compileInfo << "\n}" << endl;
@@ -102,13 +126,18 @@ int main() {
 
             if (compileInfo.find("error generated") != string::npos|| compileInfo.find("errors generated") != string::npos) {
                 ofstream resetFile("PayLoad.cpp");
-                resetFile << DEFAULT_PAYLOAD;
+                resetFile << lastGoodPayload;
                 resetFile.close();
+                functionCount = lastGoodFunctionCount;
                 codeBuffer.clear();
                 cout << "Changes discarded due to compilation errors." << endl;
                 cout << ">>>";
                 continue;
             }
+
+            // Save last good payload for future rollback
+            lastGoodPayload = readFile("PayLoad.cpp");
+            lastGoodFunctionCount = functionCount;
 
             HMODULE hMod = LoadLibrary(TEXT("PayLoad.dll"));
             if (!hMod) {
@@ -139,7 +168,9 @@ int main() {
             }
 
             FreeLibrary(hMod);
-            codeBuffer.clear();
+            if (!keepMode) {
+                codeBuffer.clear();
+            }
         }
         else if (cmd == "::TEST") {
             // Run test function
@@ -173,6 +204,9 @@ int main() {
             resetFile << DEFAULT_PAYLOAD;
             resetFile.close();
             codeBuffer.clear();
+            lastGoodPayload = DEFAULT_PAYLOAD;
+            lastGoodFunctionCount = 0;
+            functionCount = 0;
             cout << "Code buffer cleared." << endl;
         }
         else if (cmd == "::CODE") {
@@ -196,7 +230,8 @@ int main() {
 
 // Function definitions
 void greet() {
-    cout << "C++ REPL\n-------------------------\n";
+    cout << "C++ REPL\n-------------------------\n"
+         << "Tip: use --no-color to disable colored compiler output\n";
 }
 
 void help() {
@@ -204,6 +239,8 @@ void help() {
         << "::CODE (View code buffer)\n"
         << "::CODE CLEAR (Clear code buffer)\n"
         << "::TEST (Run test function)\n"
+        << "::KEEP ON  (Keep code buffer after EXEC)\n"
+        << "::KEEP OFF (Clear code buffer after EXEC, default)\n"
         << "::GLOBAL ON (Enable global mode)\n"
         << "::GLOBAL OFF (Disable global mode)\n";
 }
@@ -227,4 +264,9 @@ string getCompilerPath(const string& configFilePath) {
 
     config.close();
     return path;
+}
+
+string readFile(const string& path) {
+    ifstream f(path);
+    return string(istreambuf_iterator<char>(f), istreambuf_iterator<char>());
 }
