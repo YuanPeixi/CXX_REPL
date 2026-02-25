@@ -419,3 +419,10 @@ FodyWeavers.xsd
 
 #This project 
 /MinGW
+*.bc
+*.dll
+*.ii
+*.lib
+*.o
+*.s
+config.txt

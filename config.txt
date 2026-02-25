@@ -1,1 +1,1 @@
-.\MinGW\bin\
+D:\Program Files\CodeBlock\MinGW\bin\

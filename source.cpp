@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
             if (!noColor) {
                 compileCmd += "-fansi-escape-codes -fdiagnostics-color=always ";
             }
-            compileCmd += "-save-temps=obj -shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib";
+            compileCmd += "-save-temps -shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib";
             string compileInfo = executeCommand(compileCmd);
 
             if (!compileInfo.empty()) {
@@ -174,7 +174,7 @@ int main(int argc, char* argv[]) {
         }
         else if (cmd == "::TEST") {
             // Run test function
-            auto compileInfo = executeCommand("\"" + compilerPath + "clang++.exe\" -shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib");
+            auto compileInfo = executeCommand("\"" + compilerPath + "clang++.exe\" -save-temps -shared PayLoad.cpp -o PayLoad.dll -Wl,--out-implib,PayLoad.lib");
             if (!compileInfo.empty()) {
                 cout << "CompileInfo={\n" << compileInfo << "\n}" << endl;
             }
